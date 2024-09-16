@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proforma Invoice</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .invoice-box { max-width: 800px; margin: auto; padding: 30px; border: 1px solid #eee; box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); }
+        h3 { font-size: 24px; text-align: center; margin-bottom: 20px; }
+
+        .heading { background: #eee; border-bottom: 1px solid #ddd; font-weight: bold; }
+        table { width: 100%; line-height: inherit; text-align: left; }
+        table td { padding: 5px; vertical-align: top; }
+        table tr.item td { border-bottom: 1px solid #eee; }
+        table tr.total td { font-weight: bold; }
+
+        /* Aligning text on the left and values to the left side of Total Amount */
+        .totals-section table { width: 100%; }
+        .totals-section table tr td:first-child { text-align: left; }
+        .totals-section table tr td:last-child { text-align: left; }
+
+        /* Bank details styling */
+        .bank-details { margin-top: 20px; text-align: left; }
+    </style>
+</head>
+<body>
+    <div class="invoice-box">
+        <h3>PROFORMA INVOICE</h3>
+
+        <!-- Invoice Number and Date -->
+        <div class="invoice-details">
+            <div>
+                <strong>Invoice #:</strong> {{ invoice_number }}
+            </div>
+            <div style="text-align: right;">
+                <strong>Date:</strong> {{ date }}<br>
+                <strong>Valid Until:</strong> {{ due_date }}
+            </div>
+        </div>
+
+        <!-- From and Ship To -->
+        <div class="invoice-details">
+            <div class="from">
+                <b>From:</b><br>
+                Himanshu Engineering Works<br>
+                ShopNo-33, Sargam Apartment, Sector-11, PlotNo-35/36, Kamothe, Navi Mumbai<br>
+                Mobile: +91 9324639716<br>
+                GST: 27AGFPV6432J1ZY
+            </div>
+            <div class="ship-to">
+                <br><b>Bill To:</b><br>
+                {{ company_name }}<br>
+                {{ company_address }}<br>
+                Mobile: {{  company_mobile }}<br>
+                GST: {{ company_gst }}<br>
+            </div>
+        </div>
+
+        <!-- Shipping Details -->
+        <div class="invoice-details">
+            <br><b>Shipping Details:</b><br>
+            
+            {{ shipping_company_address }}<br>
+            
+        </div>
+
+        <!-- Item Table -->
+        <table>
+            <tr class="heading">
+                <td>Description</td>
+                <td>HSN Code</td>
+                <td>Quantity</td>
+                <td>UOM</td>
+                <td>Unit Price</td>
+                <td>Total Amount</td>
+            </tr>
+            {% for item in items %}
+            <tr class="item">
+                <td>{{ item.name }}</td>
+                <td>{{ item.hsn }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.uom }}</td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.total }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <!-- Totals Section -->
+        <div class="totals-section">
+            <table>
+                <tr class="total">
+                    <td>Subtotal</td>
+                    <td>{{ subtotal }}</td>
+                </tr>
+                <tr class="total">
+                    <td>CGST ({{ cgst }}%)</td>
+                    <td>{{ cgst_amount }}</td>
+                </tr>
+                <tr class="total">
+                    <td>SGST ({{ sgst }}%)</td>
+                    <td>{{ sgst_amount }}</td>
+                </tr>
+                <tr class="total">
+                    <td>Discount ({{ discount }}%)</td>
+                    <td>{{ discount_amount }}</td>
+                </tr>
+                <tr class="total">
+                    <td>Material Loading Cost</td>
+                    <td>{{ material_loading_cost }}</td>
+                </tr>
+                <tr class="total">
+                    <td>Transportational Cost</td>
+                    <td>{{ transportational_cost }}</td>
+                </tr>
+                <tr class="total">
+                    <td>Total</td>
+                    <td>{{ total }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Bank Details -->
+        <div class="bank-details">
+            <b>Bank Details:</b><br>
+            Himanshu Engineering Works<br>
+            A/C No: 566601010050060<br>
+            IFSC: UBIN0556661<br>
+            Branch: Kamothe
+        </div>
+
+        <!-- Terms and Conditions -->
+        <div class="terms">
+            <br><b>Terms and Conditions:</b><br>
+            Payment is due till the valid invoice date.
+        </div>
+    </div>
+</body>
+</html>
