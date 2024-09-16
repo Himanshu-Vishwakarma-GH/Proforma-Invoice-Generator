@@ -1,13 +1,13 @@
 import streamlit as st
-import pdfkit
 from jinja2 import Environment, FileSystemLoader
+from weasyprint import HTML
 
 # Function to create PDF invoice
 def create_invoice_pdf(invoice_data, filename, template_name):
     env = Environment(loader=FileSystemLoader('.'))
     template = env.get_template(template_name)
     html_out = template.render(invoice_data)
-    pdfkit.from_string(html_out, filename)
+    HTML(string=html_out).write_pdf(filename)
 
 # Streamlit app
 st.title("Proforma Invoice Generator")
@@ -38,7 +38,7 @@ with st.form(key='proforma_invoice_form'):
         item_price = st.number_input(f"Item {i+1} Unit Price", min_value=0.0, key=f'proforma_item_price_{i}')
         item_total = item_quantity * item_price
         items.append({'name': item_name, 'hsn': item_hsn, 'quantity': item_quantity, 'uom': item_uom, 'price': f'{item_price:.2f}', 'total': f'{item_total:.2f}'})
-
+    
     # Tax and Discount
     cgst = st.number_input("CGST (%)", min_value=0.0, step=0.1)
     sgst = st.number_input("SGST (%)", min_value=0.0, step=0.1)
