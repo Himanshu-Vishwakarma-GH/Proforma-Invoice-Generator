@@ -1,18 +1,13 @@
 import streamlit as st
 from jinja2 import Environment, FileSystemLoader
-import pdfkit
-
-# Configure pdfkit with the path to wkhtmltopdf
-config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+from weasyprint import HTML
 
 # Function to create PDF invoice
 def create_invoice_pdf(invoice_data, filename, template_name):
     env = Environment(loader=FileSystemLoader('.'))
     template = env.get_template(template_name)
     html_out = template.render(invoice_data)
-    with open('invoice.html', 'w') as f:
-        f.write(html_out)
-    pdfkit.from_file('invoice.html', filename, configuration=config)
+    HTML(string=html_out).write_pdf(filename)
 
 # Streamlit app
 st.title("Proforma Invoice Generator")
@@ -30,9 +25,7 @@ with st.form(key='proforma_invoice_form'):
     due_date = st.date_input("Valid Until")
 
     # Shipping Details
-    
     shipping_company_address = st.text_input("Shipping Company Address")
-    
 
     # Item Details
     num_items = st.number_input("Number of Items", min_value=1, step=1)
@@ -76,9 +69,7 @@ if submit_button:
         'company_address': company_address,
         'company_mobile': company_mobile,
         'company_gst': company_gst,
-        
         'shipping_company_address': shipping_company_address,
-        
         'items': items,
         'subtotal': f'{subtotal:.2f}',
         'cgst': cgst,
